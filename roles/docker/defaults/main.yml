@@ -1,0 +1,3 @@
+---
+docker_container_name: nginx_server
+docker_image_name: nginx_server:v1.0

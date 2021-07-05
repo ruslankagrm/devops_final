@@ -1,0 +1,21 @@
+---
+- name: Install basic packages
+  apt:
+    name: "{{ item }}"
+    update_cache: yes
+    autoremove: yes
+  with_items:
+    - apt-transport-https
+    - ca-certificates
+    - curl
+    - software-properties-common
+    - python3-pip
+    - virtualenv
+    - python3-setuptools
+  when: ansible_os_family == "Debian"
+
+- name: Install docker-py
+  pip:
+    name: docker-py
+    state: latest
+  when: ansible_os_family == "Debian"

@@ -1,0 +1,6 @@
+---
+- name: Start container
+  docker_container:
+    name: "{{ docker_container_name }}"
+    image: "{{ docker_image_name }}"
+

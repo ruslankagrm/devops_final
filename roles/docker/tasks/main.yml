@@ -1,0 +1,37 @@
+---
+- name: Create build directory
+  file:
+    path: /root/docker
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+
+- name: Copy Dockerfile
+  template:
+    src: Dockerfile
+    dest: "/root/docker/Dockerfile"
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Build container image
+  docker_image:
+    name: "{{ docker_image_name }}"
+    build:
+      path: /root/docker
+      source: build
+    state: present
+
+
+- name: Check image existing
+  docker_image_info:
+    name: "{{ docker_image_name }}"
+  register: result
+  notify:
+    - Start container
+
+- name: Check container status
+  docker_container_info:
+    name: "{{ docker_container_name }}"
+  register: result
