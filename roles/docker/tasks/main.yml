@@ -1,4 +1,24 @@
 ---
+- name: Add an apt signing key for Docker
+  apt_key:
+    url: https://download.docker.com/linux/ubuntu/gpg
+    state: present
+
+- name: Add apt repository for stable version
+  apt_repository:
+    repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable
+    state: present
+
+- name: Install Docker
+  apt:
+    name: "{{ item }}"
+    state: present
+    update_cache: yes
+  with_items:
+    - docker-ce
+    - docker-ce-cli
+    - containerd.io
+
 - name: Create build directory
   file:
     path: /root/docker
@@ -15,23 +35,46 @@
     group: root
     mode: '0644'
 
+- name: Copy index.html
+  template:
+    src: index.html
+    dest: "/root/docker/index.html"
+    owner: root
+    group: root
+    mode: '0644'
+
 - name: Build container image
   docker_image:
     name: "{{ docker_image_name }}"
+    source: build
     build:
-      path: /root/docker
-      source: build
+      path: "/root/docker/"
     state: present
-
 
 - name: Check image existing
   docker_image_info:
     name: "{{ docker_image_name }}"
-  register: result
-  notify:
-    - Start container
 
+- name: Start container
+  docker_container:
+    name: "{{ docker_container_name }}"
+    image: "{{ docker_image_name }}"
+    ports:
+      - "8000:80"
 - name: Check container status
   docker_container_info:
     name: "{{ docker_container_name }}"
+
+- name: Get container info
+  docker_container_info:
+    name: "{{ docker_container_name }}"
   register: result
+
+- name: Does container exist?
+  debug:
+    msg: "The container {{ 'exists' if result.exists else 'does not exist' }}"
+
+- name: Print the container status
+  debug:
+    msg: "The container status is {{ result.container['State']['Status'] }}"
+  when: result.exists
