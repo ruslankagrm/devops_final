@@ -13,3 +13,5 @@ jobs:
         override-deps: |
           ansible==2.11
           ansible-lint==5
+        args:
+          warn_list: -'701'
