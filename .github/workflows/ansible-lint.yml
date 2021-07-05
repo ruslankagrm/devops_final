@@ -8,7 +8,8 @@ jobs:
     - name: Lint Ansible Playbook
       uses: ansible/ansible-lint-action@master
       with:
-        targets: playbook.yml
+        playbook: playbook.yml
+        hosts: inventory.yml
         override-deps: |
           ansible==2.11
           ansible-lint==5
