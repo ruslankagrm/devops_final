@@ -1,7 +1,7 @@
 terraform {
   required_providers {
     aws = {
-      source  = "hashicorp/aws"
+      source = "hashicorp/aws"
       version = "~> 3.27"
     }
   }
@@ -11,27 +11,20 @@ terraform {
 
 provider "aws" {
   profile = "default"
-  region  = "eu-west-2"
+  region = "eu-west-2"
 }
 
 module "vpc" {
   source = "./modules/vpc"
-  env    = "devops_course"
+  env = "devops_course"
+  az = "eu-west-2a"
 }
 
-resource "aws_instance" "app_server" {
-  ami           = "ami-xxxxxx"
-  instance_type = "t2.micro"
-
-  tags = {
-    Name = "EC2DevOpsCourse"
-  }
-}
-
-module "web_instance" {
-  source    = "./modules/ec2"
-  subnet_id = module.vpc.vpc_id
-  sg_ids    = [module.vpc.public_sg_id]
-  name      = "web"
-  key_name  = "devops_course"
+module "ec2" {
+  source = "./modules/ec2"
+  subnet_id = module.vpc.public_subnet_id
+  sg_ids = [module.vpc.public_sg_id]
+  name = "web"
+  env = "devops_course"
+  key_name = "devops-course"
 }

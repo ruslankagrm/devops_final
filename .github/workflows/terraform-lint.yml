@@ -10,6 +10,3 @@ jobs:
       uses: actions/checkout@main
     - name: Lint Terraform
       uses: actionshub/terraform-lint@main
-#    - name: Terraform Format
-#      id: fmt
-#      run: terraform fmt -check

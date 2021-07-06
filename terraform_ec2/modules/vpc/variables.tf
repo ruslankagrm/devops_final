@@ -19,5 +19,5 @@ variable "env" {
 }
 
 variable "az" {
-  default = "a"
+  default = "eu-west-2a"
 }

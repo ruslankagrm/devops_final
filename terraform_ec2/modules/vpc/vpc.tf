@@ -32,10 +32,14 @@ resource "aws_default_route_table" "default_route_table" {
     cidr_block = "0.0.0.0/0"
     gateway_id = aws_internet_gateway.igw.id
   }
+  tags = {
+    Name = "${var.env}_default_rtb"
+    Env = var.env
+  }
 }
 
 resource "aws_subnet" "private_subnet" {
-  cidr_block              = var.public_subnet
+  cidr_block              = var.private_subnet
   vpc_id                  = aws_vpc.vpc.id
   map_public_ip_on_launch = "false"
   availability_zone       = var.az
@@ -49,7 +53,7 @@ resource "aws_subnet" "private_subnet" {
 resource "aws_route_table" "private_route_table" {
   vpc_id = aws_vpc.vpc.id
 
-  route = {
+  route {
     cidr_block     = "0.0.0.0/0"
     nat_gateway_id = aws_nat_gateway.nat_gw.id
   }
@@ -70,6 +74,10 @@ resource "aws_nat_gateway" "nat_gw" {
   allocation_id = aws_eip.eip.id
   subnet_id     = aws_subnet.nat_gw_subnet.id
 
+  tags = {
+    Name = "${var.env}_nat_gw"
+    Env = var.env
+  }
 }
 
 resource "aws_eip" "eip" {
@@ -91,19 +99,15 @@ resource "aws_security_group" "public_sg" {
   vpc_id = aws_vpc.vpc.id
   ingress {
     from_port = 22
-    protocol  = "SSH"
+    protocol  = "tcp"
     to_port   = 22
-    cidr_blocks = [
-    "0.0.0.0/0"]
+    cidr_blocks = ["0.0.0.0/0"]
   }
-  ingress {
+  egress {
     from_port = 0
     protocol  = "-1"
     to_port   = 0
-    cidr_blocks = [
-    "0.0.0.0/0"]
-
-
+    cidr_blocks = ["0.0.0.0/0"]
   }
 
   tags = {
@@ -117,11 +121,11 @@ resource "aws_security_group" "private_sg" {
   vpc_id = aws_vpc.vpc.id
   ingress {
     from_port   = 0
-    protocol    = "-"
+    protocol    = "-1"
     to_port     = 0
     cidr_blocks = [var.vpc_cidr_block]
   }
-  ingress {
+  egress {
     from_port = 0
     protocol  = "-1"
     to_port   = 0
@@ -132,7 +136,7 @@ resource "aws_security_group" "private_sg" {
   }
 
   tags = {
-    Name = "${var.env}_public_sg"
+    Name = "${var.env}_private_sg"
     Env  = var.env
   }
 }

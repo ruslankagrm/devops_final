@@ -14,11 +14,11 @@ data "aws_ami" "ubuntu" {
   owners = ["099720109477"] # Canonical
 }
 resource "aws_instance" "ec2" {
-  ami             = data.aws_ami.ubuntu.id
-  instance_type   = var.instance_type
-  subnet_id       = var.subnet_id
-  security_groups = var.sg_ids
-  key_name        = var.key_name
+  ami                    = data.aws_ami.ubuntu.id
+  instance_type          = var.instance_type
+  subnet_id              = var.subnet_id
+  vpc_security_group_ids = var.sg_ids
+  key_name               = var.key_name
   root_block_device {
     volume_size = var.root_disk_size
   }

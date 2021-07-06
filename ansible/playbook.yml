@@ -1,7 +1,7 @@
 ---
 - name: Set up instance
   hosts: webserver
-  remote_user: rus
+  remote_user: ubuntu
   become: yes
   roles:
     - docker
