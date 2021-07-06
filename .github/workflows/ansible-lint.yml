@@ -11,5 +11,5 @@ jobs:
         playbook: playbook.yml
         hosts: inventory.yml
         override-deps: |
-          ansible==2.11
+          ansible==2.11.1
           ansible-lint==5
