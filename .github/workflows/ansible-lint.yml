@@ -1,15 +1,15 @@
-name: Ansible Lint
-on: [push, pull_request]
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v2
-    - name: Lint Ansible Playbook
-      uses: ansible/ansible-lint-action@master
-      with:
-        playbook: playbook.yml
-        hosts: inventory.yml
-        override-deps: |
-          ansible==2.11.1
-          ansible-lint==5
+#name: Ansible Lint
+#on: [push, pull_request]
+#jobs:
+#  build:
+#    runs-on: ubuntu-latest
+#    steps:
+#    - uses: actions/checkout@v2
+#    - name: Lint Ansible Playbook
+#      uses: ansible/ansible-lint-action@master
+#      with:
+#        playbook: playbook.yml
+#        hosts: inventory.yml
+#        override-deps: |
+#          ansible==2.11.1
+#          ansible-lint==5
